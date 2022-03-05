@@ -119,7 +119,7 @@
         schedule_delay = "0s"
         startup_delay = "100ms"
 
----
+    ---
 
     [stream_processors."io.containerd.ocicrypt.decoder.v1.tar.gzip"]
         accepts = ["application/vnd.oci.image.layer.v1.tar+gzip+encrypted"]
@@ -148,7 +148,9 @@
         sudo systemctl restart containerd
         sudo systemctl enable containerd
         sudo systemctl status containerd
+    # Output
     ```sh
+
     root@localhost:~# systemctl status containerd
     ● containerd.service - containerd container runtime
         Loaded: loaded (/lib/systemd/system/containerd.service; enabled; vendor preset: enabled)
@@ -186,7 +188,7 @@
 - Check version of kubectl
 
         kubectl version --client && kubeadm version
-       
+    # Output   
     ```sh
         root@localhost:~# kubectl version --client && kubeadm version
         Client Version: version.Info{Major:"1", Minor:"23", GitVersion:"v1.23.4", GitCommit:"e6c093d87ea4cbb530a7b2ae91e54c0842d8308a", GitTreeState:"clean", BuildDate:"2022-02-16T12:38:05Z", GoVersion:"go1.17.7", Compiler:"gc", Platform:"linux/amd64"}
@@ -208,6 +210,7 @@
 - Initialization master
 
         kubeadm init --apiserver-advertise-address=10.0.0.11 --pod-network-cidr=10.244.0.0/16
+    # Output
     ```sh
         root@k8s-m01:~# kubeadm init --apiserver-advertise-address 10.0.0.11 --pod-network-cidr=10.244.0.0/16
         [init] Using Kubernetes version: v1.23.4
@@ -310,7 +313,7 @@
 
         kubectl get nodes 
         kubectl get nodes  -o wide
-
+    # Output
     ```sh
     root@k8s-m01:~# kubectl get nodes 
     NAME      STATUS     ROLES                  AGE   VERSION
@@ -324,6 +327,7 @@
 
         kubectl get pods --all-namespaces
         kubectl get pods --all-namespaces -o wide
+    # Output
     ```sh
     root@k8s-m01:~# kubectl get pods --all-namespaces
     NAMESPACE     NAME                              READY   STATUS    RESTARTS      AGE
@@ -348,6 +352,7 @@
 - Install a Network Plugin in the Plugin
 
         kubeclt apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+    # Output
     ```sh
     root@k8s-m01:~# kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
     Warning: policy/v1beta1 PodSecurityPolicy is deprecated in v1.21+, unavailable in v1.25+
@@ -361,6 +366,7 @@
 - Check status pods
 
         kubectl get pods --all-namespace
+    # Output
     ```sh
     root@k8s-m01:~# kubectl get pods --all-namespaces
     NAMESPACE     NAME                              READY   STATUS    RESTARTS      AGE
@@ -377,6 +383,7 @@
 - Create token join cluster
 
         kubeadm token create --print-join-command    
+    # Output
     ```sh
     root@k8s-m01:~# kubeadm token create --print-join-command
     kubeadm join 10.0.0.11:6443 --token 9489e3.y4jsk53zu6n3ywxs --discovery-token-ca-cert-hash sha256:0fbef9b1074945142bcdfa1852003ebce2e554db04316a77336a34821e5f0829 
@@ -388,7 +395,7 @@
 - Worker node 1
 
         kubeadm join 10.0.0.11:6443 --token 9489e3.y4jsk53zu6n3ywxs --discovery-token-ca-cert-hash sha256:0fbef9b1074945142bcdfa1852003ebce2e554db04316a77336a34821e5f0829
-    
+    # Output
     ```sh
     root@k8s-w01:~# kubeadm join 10.0.0.11:6443 --token 9489e3.y4jsk53zu6n3ywxs --discovery-token-ca-cert-hash sha256:0fbef9b1074945142bcdfa1852003ebce2e554db04316a77336a34821e5f0829
     [preflight] Running pre-flight checks
@@ -412,7 +419,7 @@
 - Worker node 2
 
         kubeadm join 10.0.0.11:6443 --token 9489e3.y4jsk53zu6n3ywxs --discovery-token-ca-cert-hash sha256:0fbef9b1074945142bcdfa1852003ebce2e554db04316a77336a34821e5f0829
-    
+    # Output
     ```sh
     root@k8s-w02:~# kubeadm join 10.0.0.11:6443 --token 9489e3.y4jsk53zu6n3ywxs --discovery-token-ca-cert-hash sha256:0fbef9b1074945142bcdfa1852003ebce2e554db04316a77336a34821e5f0829
     [preflight] Running pre-flight checks
@@ -437,6 +444,7 @@
 
         kubectl get nodes
         kubectl get nodes -o wide
+    # Output
     ```sh
     root@k8s-m01:~# kubectl get nodes
     NAME      STATUS   ROLES                  AGE     VERSION
@@ -458,6 +466,7 @@
 
         ctr plugins
         ctr plugins ls
+    # Output
     ```sh
         root@k8s-m01:~# ctr plugins
         NAME:
