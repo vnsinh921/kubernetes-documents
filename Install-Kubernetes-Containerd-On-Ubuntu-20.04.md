@@ -20,7 +20,7 @@
     Containerd version: 1.5.5
     Server Type	Server Hostname	Specs
     Master	k8s-m01.	4GB Ram, 2vcpus IP: 10.0.0.11/24
-    Worker	k8s-w02.	4GB Ram, 2vcpus IP: 10.0.0.14/24
+    Worker	k8s-w01.	4GB Ram, 2vcpus IP: 10.0.0.14/24
     Worker	k8s-w02.	4GB Ram, 2vcpus IP: 10.0.0.15/24
 
 <a name="2"></a>
