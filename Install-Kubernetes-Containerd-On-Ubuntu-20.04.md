@@ -139,7 +139,7 @@
     gid = 0
     uid = 0
     ```
-- Cài đặt cgroup driver
+- Config cgroup driver
 
         sed -i 's/SystemdCgroup = false/SystemdCgroup = true/g' /etc/containerd/config.toml
 
@@ -193,10 +193,10 @@
         root@localhost:~# kubectl version --client && kubeadm version
         Client Version: version.Info{Major:"1", Minor:"23", GitVersion:"v1.23.4", GitCommit:"e6c093d87ea4cbb530a7b2ae91e54c0842d8308a", GitTreeState:"clean", BuildDate:"2022-02-16T12:38:05Z", GoVersion:"go1.17.7", Compiler:"gc", Platform:"linux/amd64"}
         kubeadm version: &version.Info{Major:"1", Minor:"23", GitVersion:"v1.23.4", GitCommit:"e6c093d87ea4cbb530a7b2ae91e54c0842d8308a", GitTreeState:"clean", BuildDate:"2022-02-16T12:36:57Z", GoVersion:"go1.17.7", Compiler:"gc", Platform:"linux/amd64"}
-        ```
+    ```
 - Disable Swap
 
-        sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+        sudo sed -i '/swap/s/^\(.*\)$/#\1/g' /etc/fstab
         sudo swapoff -a
 - Enable kubelet service
 
@@ -290,16 +290,10 @@
 - You can optionally pass Socket file for runtime and advertise address depending on your setup.
 
         # Containerd
-        sudo kubeadm init \
-        --apiserver-advertise-address 10.0.0.11 \
-        --pod-network-cidr=10.244.0.0/16 \
-        --cri-socket /run/containerd/containerd.sock
+        sudo kubeadm init --apiserver-advertise-address 10.0.0.11 --pod-network-cidr=10.244.0.0/16 --cri-socket /run/containerd/containerd.sock
 
         # Docker
-        sudo kubeadm init \
-        --apiserver-advertise-address 10.0.0.11 \
-        --pod-network-cidr=10.244.0.0/16 \
-        --cri-socket /var/run/docker.sock
+        sudo kubeadm init --apiserver-advertise-address 10.0.0.11 --pod-network-cidr=10.244.0.0/16 --cri-socket /var/run/docker.sock
 
 - Config environment runing kubeclt 
 
