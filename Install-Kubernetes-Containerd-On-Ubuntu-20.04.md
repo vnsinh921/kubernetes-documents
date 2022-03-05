@@ -494,14 +494,22 @@
     ```
 - Namespace
 
-        root@k8s-m01:~# ctr namespace
-        NAME:
-        ctr namespaces - manage namespaces
+        ctr namespace
+        ctr namespace ls
+        ctr namespace create sinhtv
+        ctr namespace rm sinhtv
 
-        USAGE:
-        ctr namespaces command [command options] [arguments...]
+    # Output
+    ```sh
+            
+    root@k8s-m01:~# ctr namespace
+    NAME:
+    ctr namespaces - manage namespaces
 
-        COMMANDS:
+    USAGE:
+    ctr namespaces command [command options] [arguments...]
+
+    COMMANDS:
         create, c   create a new namespace
         list, ls    list namespaces
         remove, rm  remove one or more namespaces
@@ -510,8 +518,6 @@
         OPTIONS:
         --help, -h  show help
         
-        root@k8s-m01:~# 
-    ```sh
     root@k8s-m01:~# ctr namespace ls
     NAME   LABELS 
     k8s.io        
@@ -530,15 +536,19 @@
     ```
 - Images
 
-        root@k8s-m01:~# ctr image
+        ctr image
+        ctr -n k8s.io image ls
+    # Output
+    ```sh
+    root@k8s-m01:~# 
 
-        NAME:
+    NAME:
         ctr images - manage images
 
-        USAGE:
+    USAGE:
         ctr images command [command options] [arguments...]
 
-        COMMANDS:
+    COMMANDS:
         check       check existing images to ensure all content is available locally
         export      export images
         import      import images
@@ -552,10 +562,9 @@
         label       set and clear labels for an image
         convert     convert an image
 
-        OPTIONS:
-        --help, -h  show help
-    ```sh
-   
+    OPTIONS:
+        --help, -h  show help  
+
     root@k8s-m01:~# ctr -n k8s.io image ls
     REF                                                                                                                              TYPE                                                      DIGEST                                                                  SIZE      PLATFORMS                                                                    LABELS                          
     docker.io/rancher/mirrored-flannelcni-flannel-cni-plugin:v1.0.1                                                                  application/vnd.docker.distribution.manifest.list.v2+json sha256:5dd61f95e28fa7ef897ff2fa402ce283e5078d334401d2f62d00a568f779f2d5 3.6 MiB   linux/amd64,linux/arm/v6,linux/arm64/v8,linux/s390x                          io.cri-containerd.image=managed 
