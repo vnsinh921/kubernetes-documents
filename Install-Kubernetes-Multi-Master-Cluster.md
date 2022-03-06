@@ -178,7 +178,7 @@
         chmod +x cfssl*
         mv cfssl_linux-amd64 /usr/local/bin/cfssl
         cfssl version
-        mkdir - p ~/certs $$ cd ~/certs
+        mkdir - p ~/certs && cd ~/certs
 - Create the certificate authority configuration file
 
         vim ca-config.json
