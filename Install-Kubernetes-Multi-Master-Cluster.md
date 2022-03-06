@@ -32,9 +32,13 @@
 <a name="2.1"></a>
 ### 2.1 Config hostname
     cat <<EOF >>/etc/hosts
+    10.0.0.10 k8s-gw
     10.0.0.11 k8s-m01
+    10.0.0.12 k8s-m02
+    10.0.0.13 k8s-m03
     10.0.0.14 k8s-w01
     10.0.0.15 k8s-w02
+    10.0.0.16 k8s-w03
     EOF
 
 <a name="2.2"></a>
@@ -271,7 +275,7 @@
 - Rename certificate (All master nodes)
 
         cd /etc/kubernetes/pki/etcd/
-        mv ca-key.pem cd.key
+        mv ca-key.pem ca.key
         mv ca.pem ca.crt
         mv kubernetes-key.pem server.key
         mv kubernetes.pem  server.crt
@@ -602,8 +606,6 @@
 - Joint Cluster worker nodes(k8s-w01)
 
         kubeadm join 10.0.0.10:6443 --token lwpozm.c36vk3jg8sic5f33 --discovery-token-ca-cert-hash sha256:d6d81cea567416f99d5051301ab68b27bf53cef727c5b5a46dc03e38a6eefa62
-#Output
-
     ```sh
         root@k8s-w01:~# kubeadm join 10.0.0.10:6443 --token lwpozm.c36vk3jg8sic5f33 --discovery-token-ca-cert-hash sha256:d6d81cea567416f99d5051301ab68b27bf53cef727c5b5a46dc03e38a6eefa62
         [preflight] Running pre-flight checks
