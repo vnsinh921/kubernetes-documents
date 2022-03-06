@@ -376,7 +376,7 @@
         root@k8s-m01:~# 
 
     ```
-- Config environment runing kubeclt 
+- Config environment runing kubectl
 
         mkdir -p $HOME/.kube
         sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
