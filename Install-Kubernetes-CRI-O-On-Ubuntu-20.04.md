@@ -17,7 +17,7 @@
 ### 1. Prepare the environment
     - OS: Ubuntu-20.04
     - Kubelet vesion: v1.23.4
-    - Containerd version: 1.5.5
+    - CRI-O version: 1.22.2
 
     Type    Hostname	Specs               IP Addess
     Master	k8s-m01     4GB Ram, 2vcpus     IP: 10.0.0.11/24
