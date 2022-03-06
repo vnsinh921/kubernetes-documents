@@ -69,7 +69,7 @@
         mkdir -p /etc/systemd/system/docker.service.d
 
 
-- Restart containerd và enable containerd
+- Restart & enable docker
 
         sudo systemctl daemon-reload
         sudo systemctl restart docker
@@ -77,8 +77,7 @@
         sudo systemctl status docker
     # Output
     ```sh
-    root@localhost:~# systemctl status containerd
-    root@k8s-m01:~# systemctl status docker
+    root@localhost:~# systemctl status docker
     ● docker.service - Docker Application Container Engine
         Loaded: loaded (/lib/systemd/system/docker.service; enabled; vendor preset: enabled)
         Active: active (running) since Sun 2022-03-06 05:59:53 UTC; 30s ago
@@ -221,6 +220,8 @@
 
         # Docker
         sudo kubeadm init --apiserver-advertise-address 10.0.0.11 --pod-network-cidr=10.244.0.0/16 --cri-socket /var/run/docker.sock
+        # Cri-o
+        sudo kubeadm init --apiserver-advertise-address 10.0.0.11 --pod-network-cidr=10.244.0.0/16 --cri-socket /var/run/crio/crio.sock
 
 - Config environment runing kubeclt 
 
@@ -271,7 +272,7 @@
     ```
 - Install a Network Plugin in the Plugin
 
-        kubeclt apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+        kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
     # Output
     ```sh
     root@k8s-m01:~# kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
