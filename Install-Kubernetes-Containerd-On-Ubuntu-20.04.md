@@ -289,12 +289,14 @@
     ```
 - You can optionally pass Socket file for runtime and advertise address depending on your setup.
 
-        # Containerd
-        sudo kubeadm init --apiserver-advertise-address 10.0.0.11 --pod-network-cidr=10.244.0.0/16 --cri-socket /run/containerd/containerd.sock
-
         # Docker
         sudo kubeadm init --apiserver-advertise-address 10.0.0.11 --pod-network-cidr=10.244.0.0/16 --cri-socket /var/run/docker.sock
 
+        # Containerd
+        sudo kubeadm init --apiserver-advertise-address 10.0.0.11 --pod-network-cidr=10.244.0.0/16 --cri-socket /run/containerd/containerd.sock
+
+        # Cri-o
+        sudo kubeadm init --apiserver-advertise-address 10.0.0.11 --pod-network-cidr=10.244.0.0/16 --cri-socket /var/run/crio/crio.sock
 - Config environment runing kubeclt 
 
         mkdir -p $HOME/.kube
@@ -345,7 +347,7 @@
     ```
 - Install a Network Plugin in the Plugin
 
-        kubeclt apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+        kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
     # Output
     ```sh
     root@k8s-m01:~# kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
