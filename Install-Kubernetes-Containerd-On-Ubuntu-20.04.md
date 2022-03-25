@@ -28,53 +28,61 @@
 ### 2. Install environment for all nodes Kubernetes
 <a name="2.1"></a>
 ### 2.1 Config hostname
+    ```sh
     cat <<EOF >>/etc/hosts
     10.0.0.11 k8s-m01
     10.0.0.14 k8s-w01
     10.0.0.15 k8s-w02
     EOF
-
+    ```
 <a name="2.2"></a>
 ### 2.2 Install required packages 
+    ```sh
     apt install -y curl wget vim nano gnupg2 software-properties-common apt-transport-https ca-certificates
-
+    ```
 <a name="2.3"></a>
 ### 2.3 Install Containerd
 -  Configure persistent loading of modules
-
-        cat <<EOF > /etc/modules-load.d/containerd.conf
-        overlay
-        br_netfilter
-        EOF
+    ```sh
+    cat <<EOF > /etc/modules-load.d/containerd.conf
+    overlay
+    br_netfilter
+    EOF
+    ```
 -  Load at runtime
-
-        sudo modprobe overlay
-        sudo modprobe br_netfilter
+    ```sh
+    sudo modprobe overlay
+    sudo modprobe br_netfilter
+    ```
 - Check br_netfilter module running
-
-        root@localhost:~# lsmod | grep br_netfilter
-        br_netfilter           28672  0
-        bridge                176128  1 br_netfilter
-
+    ```sh
+    root@localhost:~# lsmod | grep br_netfilter
+    br_netfilter           28672  0
+    bridge                176128  1 br_netfilter
+    ```
 
 - Ensure sysctl params are set
-
-        cat <<EOF >> /etc/sysctl.d/kubernetes.conf
-        net.bridge.bridge-nf-call-ip6tables = 1
-        net.bridge.bridge-nf-call-iptables = 1
-        net.ipv4.ip_forward = 1
-        EOF
+    ```sh
+    cat <<EOF >> /etc/sysctl.d/kubernetes.conf
+    net.bridge.bridge-nf-call-ip6tables = 1
+    net.bridge.bridge-nf-call-iptables = 1
+    net.ipv4.ip_forward = 1
+    EOF
+    ```
 - Reload configs
-
-        sudo sysctl --system
+    ```sh
+    sudo sysctl --system
+    ```
 - Install containerd
-
-        sudo apt update
-        sudo apt install -y containerd
+    ```sh
+    sudo apt update
+    sudo apt install -y containerd
+    ```
 - Configure containerd
-
-        sudo mkdir -p /etc/containerd
-        containerd config default | sudo tee /etc/containerd/config.toml
+    ```sh
+    sudo mkdir -p /etc/containerd
+    containerd config default | sudo tee /etc/containerd/config.toml
+    ```
     # Output
     ```sh
     disabled_plugins = []
@@ -140,14 +148,15 @@
     uid = 0
     ```
 - Config cgroup driver
-
-        sed -i 's/SystemdCgroup = false/SystemdCgroup = true/g' /etc/containerd/config.toml
-
+    ```sh
+    sed -i 's/SystemdCgroup = false/SystemdCgroup = true/g' /etc/containerd/config.toml
+    ```
 - Restart containerd và enable containerd
-
-        sudo systemctl restart containerd
-        sudo systemctl enable containerd
-        sudo systemctl status containerd
+    ```sh
+    sudo systemctl restart containerd
+    sudo systemctl enable containerd
+    sudo systemctl status containerd
+    ```
     # Output
     ```sh
 
@@ -179,28 +188,32 @@
 ### 2.4 Install kubelet, kubeadm and kubectl
 
 - Install kubelet, kubeadm and kubectl
-
-        curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
-        echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
-        sudo apt update
-        sudo apt -y install kubelet kubeadm kubectl
-        sudo apt-mark hold kubelet kubeadm kubectl
+    ```sh
+    curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+    echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+    sudo apt update
+    sudo apt -y install kubelet kubeadm kubectl
+    sudo apt-mark hold kubelet kubeadm kubectl
+    ```
 - Check version of kubectl
-
-        kubectl version --client && kubeadm version
+    ```sh
+    kubectl version --client && kubeadm version
+    ```
     # Output   
     ```sh
-        root@localhost:~# kubectl version --client && kubeadm version
-        Client Version: version.Info{Major:"1", Minor:"23", GitVersion:"v1.23.4", GitCommit:"e6c093d87ea4cbb530a7b2ae91e54c0842d8308a", GitTreeState:"clean", BuildDate:"2022-02-16T12:38:05Z", GoVersion:"go1.17.7", Compiler:"gc", Platform:"linux/amd64"}
-        kubeadm version: &version.Info{Major:"1", Minor:"23", GitVersion:"v1.23.4", GitCommit:"e6c093d87ea4cbb530a7b2ae91e54c0842d8308a", GitTreeState:"clean", BuildDate:"2022-02-16T12:36:57Z", GoVersion:"go1.17.7", Compiler:"gc", Platform:"linux/amd64"}
+    root@localhost:~# kubectl version --client && kubeadm version
+    Client Version: version.Info{Major:"1", Minor:"23", GitVersion:"v1.23.4", GitCommit:"e6c093d87ea4cbb530a7b2ae91e54c0842d8308a", GitTreeState:"clean", BuildDate:"2022-02-16T12:38:05Z", GoVersion:"go1.17.7", Compiler:"gc", Platform:"linux/amd64"}
+    kubeadm version: &version.Info{Major:"1", Minor:"23", GitVersion:"v1.23.4", GitCommit:"e6c093d87ea4cbb530a7b2ae91e54c0842d8308a", GitTreeState:"clean", BuildDate:"2022-02-16T12:36:57Z", GoVersion:"go1.17.7", Compiler:"gc", Platform:"linux/amd64"}
     ```
 - Disable Swap
-
-        sudo sed -i '/swap/s/^\(.*\)$/#\1/g' /etc/fstab
-        sudo swapoff -a
+    ```sh
+    sudo sed -i '/swap/s/^\(.*\)$/#\1/g' /etc/fstab
+    sudo swapoff -a
+    ```
 - Enable kubelet service
-
-        systemctl enable kubelet
+    ```sh
+    systemctl enable kubelet
+    ```
 <a name="3"></a>
 ### 3 Initialization Cluster
 
@@ -208,8 +221,9 @@
 ### 3.1 Initialization Cluster master nodes
 
 - Initialization master
-
-        kubeadm init --apiserver-advertise-address=10.0.0.11 --pod-network-cidr=10.244.0.0/16
+    ```sh
+    kubeadm init --apiserver-advertise-address=10.0.0.11 --pod-network-cidr=10.244.0.0/16
+    ```
     # Output
     ```sh
         root@k8s-m01:~# kubeadm init --apiserver-advertise-address 10.0.0.11 --pod-network-cidr=10.244.0.0/16
@@ -288,27 +302,29 @@
         root@k8s-m01:~# 
     ```
 - You can optionally pass Socket file for runtime and advertise address depending on your setup.
+    ```sh
+    # Docker
+    sudo kubeadm init --apiserver-advertise-address 10.0.0.11 --pod-network-cidr=10.244.0.0/16 --cri-socket /var/run/docker.sock
 
-        # Docker
-        sudo kubeadm init --apiserver-advertise-address 10.0.0.11 --pod-network-cidr=10.244.0.0/16 --cri-socket /var/run/docker.sock
+    # Containerd
+    sudo kubeadm init --apiserver-advertise-address 10.0.0.11 --pod-network-cidr=10.244.0.0/16 --cri-socket /run/containerd/containerd.sock
 
-        # Containerd
-        sudo kubeadm init --apiserver-advertise-address 10.0.0.11 --pod-network-cidr=10.244.0.0/16 --cri-socket /run/containerd/containerd.sock
-
-        # Cri-o
-        sudo kubeadm init --apiserver-advertise-address 10.0.0.11 --pod-network-cidr=10.244.0.0/16 --cri-socket /var/run/crio/crio.sock
+    # Cri-o
+    sudo kubeadm init --apiserver-advertise-address 10.0.0.11 --pod-network-cidr=10.244.0.0/16 --cri-socket /var/run/crio/crio.sock
+    ```
 - Config environment runing kubeclt 
-
-        mkdir -p $HOME/.kube
-        sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-        sudo chown $(id -u):$(id -g) $HOME/.kube/config
-        export KUBECONFIG=/etc/kubernetes/admin.conf
-        echo "export KUBECONFIG=/etc/kubernetes/admin.conf" >> ~/.bashrc
-
+    ```sh
+    mkdir -p $HOME/.kube
+    sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+    sudo chown $(id -u):$(id -g) $HOME/.kube/config
+    export KUBECONFIG=/etc/kubernetes/admin.conf
+    echo "export KUBECONFIG=/etc/kubernetes/admin.conf" >> ~/.bashrc
+    ```
 - Check status nodes
-
-        kubectl get nodes 
-        kubectl get nodes  -o wide
+    ```sh
+    kubectl get nodes 
+    kubectl get nodes  -o wide
+    ```
     # Output
     ```sh
     root@k8s-m01:~# kubectl get nodes 
@@ -320,9 +336,10 @@
 
     ```
 - Check status pods
-
-        kubectl get pods --all-namespaces
-        kubectl get pods --all-namespaces -o wide
+    ```sh
+    kubectl get pods --all-namespaces
+    kubectl get pods --all-namespaces -o wide
+    ```
     # Output
     ```sh
     root@k8s-m01:~# kubectl get pods --all-namespaces
@@ -346,8 +363,9 @@
     root@k8s-m01:~# 
     ```
 - Install a Network Plugin in the Plugin
-
-        kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+    ```sh
+    kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+    ```
     # Output
     ```sh
     root@k8s-m01:~# kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
@@ -360,8 +378,9 @@
     daemonset.apps/kube-flannel-ds created
     ```
 - Check status pods
-
-        kubectl get pods --all-namespace
+    ```sh
+    kubectl get pods --all-namespace
+    ```
     # Output
     ```sh
     root@k8s-m01:~# kubectl get pods --all-namespaces
@@ -377,8 +396,9 @@
     root@k8s-m01:~# 
     ```
 - Create token join cluster
-
-        kubeadm token create --print-join-command    
+    ```sh
+    kubeadm token create --print-join-command    
+    ```
     # Output
     ```sh
     root@k8s-m01:~# kubeadm token create --print-join-command
@@ -389,8 +409,9 @@
 <a name="3.2"></a>
 ### 3.2 Join Cluster worker nodes
 - Worker node 1
-
-        kubeadm join 10.0.0.11:6443 --token 9489e3.y4jsk53zu6n3ywxs --discovery-token-ca-cert-hash sha256:0fbef9b1074945142bcdfa1852003ebce2e554db04316a77336a34821e5f0829
+    ```sh
+    kubeadm join 10.0.0.11:6443 --token 9489e3.y4jsk53zu6n3ywxs --discovery-token-ca-cert-hash sha256:0fbef9b1074945142bcdfa1852003ebce2e554db04316a77336a34821e5f0829
+    ```
     # Output
     ```sh
     root@k8s-w01:~# kubeadm join 10.0.0.11:6443 --token 9489e3.y4jsk53zu6n3ywxs --discovery-token-ca-cert-hash sha256:0fbef9b1074945142bcdfa1852003ebce2e554db04316a77336a34821e5f0829
@@ -413,8 +434,9 @@
 
     ```
 - Worker node 2
-
+    ```sh
         kubeadm join 10.0.0.11:6443 --token 9489e3.y4jsk53zu6n3ywxs --discovery-token-ca-cert-hash sha256:0fbef9b1074945142bcdfa1852003ebce2e554db04316a77336a34821e5f0829
+    ```
     # Output
     ```sh
     root@k8s-w02:~# kubeadm join 10.0.0.11:6443 --token 9489e3.y4jsk53zu6n3ywxs --discovery-token-ca-cert-hash sha256:0fbef9b1074945142bcdfa1852003ebce2e554db04316a77336a34821e5f0829
@@ -437,9 +459,10 @@
 
     ```
 - Check status nodes on master node
-
-        kubectl get nodes
-        kubectl get nodes -o wide
+    ```sh
+    kubectl get nodes
+    kubectl get nodes -o wide
+    ```
     # Output
     ```sh
     root@k8s-m01:~# kubectl get nodes
@@ -459,45 +482,45 @@
 <a name="4"></a>
 ### 4. Containerd cheat sheet command
 - Plugin
-
-        ctr plugins
-        ctr plugins ls
+    ```sh
+    ctr plugins
+    ctr plugins ls
+    ```
     # Output
     ```sh
-        root@k8s-m01:~# ctr plugins
-        NAME:
-        ctr plugins - provides information about containerd plugins
+    root@k8s-m01:~# ctr plugins
+    NAME:
+    ctr plugins - provides information about containerd plugins
 
-        USAGE:
-        ctr plugins command [command options] [arguments...]
+    USAGE:
+    ctr plugins command [command options] [arguments...]
 
-        COMMANDS:
+    COMMANDS:
         list, ls  lists containerd plugins
 
     ```
     ```sh
-        root@k8s-m01:~# ctr plugins ls
-        TYPE                            ID                       PLATFORMS      STATUS    
-        io.containerd.content.v1        content                  -              ok        
-        io.containerd.snapshotter.v1    aufs                     linux/amd64    ok        
-        io.containerd.snapshotter.v1    btrfs                    linux/amd64    skip      
-        io.containerd.snapshotter.v1    devmapper                linux/amd64    error     
-        ---   
-        io.containerd.grpc.v1           version                  -              ok        
-        io.containerd.grpc.v1           cri                      linux/amd64    ok        
-        root@k8s-m01:~# 
+    root@k8s-m01:~# ctr plugins ls
+    TYPE                            ID                       PLATFORMS      STATUS    
+    io.containerd.content.v1        content                  -              ok        
+    io.containerd.snapshotter.v1    aufs                     linux/amd64    ok        
+    io.containerd.snapshotter.v1    btrfs                    linux/amd64    skip      
+    io.containerd.snapshotter.v1    devmapper                linux/amd64    error     
+    ---   
+    io.containerd.grpc.v1           version                  -              ok        
+    io.containerd.grpc.v1           cri                      linux/amd64    ok        
+    root@k8s-m01:~# 
 
     ```
 - Namespace
-
-        ctr namespace
-        ctr namespace ls
-        ctr namespace create sinhtv
-        ctr namespace rm sinhtv
-
-    # Output
     ```sh
-            
+    ctr namespace
+    ctr namespace ls
+    ctr namespace create sinhtv
+    ctr namespace rm sinhtv
+    ```
+    # Output
+    ```sh          
     root@k8s-m01:~# ctr namespace
     NAME:
     ctr namespaces - manage namespaces
@@ -531,9 +554,10 @@
 
     ```
 - Images
-
-        ctr image
-        ctr -n k8s.io image ls
+    ```sh
+    ctr image
+    ctr -n k8s.io image ls
+    ```
     # Output
     ```sh
     root@k8s-m01:~# 
@@ -573,51 +597,52 @@
 
     ```
 - Containers
+    ```sh
+    root@k8s-m01:~# ctr container
+    NAME:
+    ctr containers - manage containers
 
-        root@k8s-m01:~# ctr container
-        NAME:
-        ctr containers - manage containers
+    USAGE:
+    ctr containers command [command options] [arguments...]
 
-        USAGE:
-        ctr containers command [command options] [arguments...]
+    COMMANDS:
+    create           create container
+    delete, del, rm  delete one or more existing containers
+    info             get info about a container
+    list, ls         list containers
+    label            set and clear labels for a container
+    checkpoint       checkpoint a container
+    restore          restore a container from checkpoint
 
-        COMMANDS:
-        create           create container
-        delete, del, rm  delete one or more existing containers
-        info             get info about a container
-        list, ls         list containers
-        label            set and clear labels for a container
-        checkpoint       checkpoint a container
-        restore          restore a container from checkpoint
-
-        OPTIONS:
-        --help, -h  show help
+    OPTIONS:
+    --help, -h  show help
         
-        root@k8s-m01:~# 
-
+    root@k8s-m01:~# 
+    ```
 - Task
+    ```sh
+    root@k8s-m01:~# ctr task
+    NAME:
+    ctr tasks - manage tasks
 
-        root@k8s-m01:~# ctr task
-        NAME:
-        ctr tasks - manage tasks
+    USAGE:
+    ctr tasks command [command options] [arguments...]
 
-        USAGE:
-        ctr tasks command [command options] [arguments...]
+    COMMANDS:
+    attach           attach to the IO of a running container
+    checkpoint       checkpoint a container
+    delete, rm       delete one or more tasks
+    exec             execute additional processes in an existing container
+    list, ls         list tasks
+    kill             signal a container (default: SIGTERM)
+    pause            pause an existing container
+    ps               list processes for container
+    resume           resume a paused container
+    start            start a container that has been created
+    metrics, metric  get a single data point of metrics for a task with the built-in Linux runtime
 
-        COMMANDS:
-        attach           attach to the IO of a running container
-        checkpoint       checkpoint a container
-        delete, rm       delete one or more tasks
-        exec             execute additional processes in an existing container
-        list, ls         list tasks
-        kill             signal a container (default: SIGTERM)
-        pause            pause an existing container
-        ps               list processes for container
-        resume           resume a paused container
-        start            start a container that has been created
-        metrics, metric  get a single data point of metrics for a task with the built-in Linux runtime
-
-        OPTIONS:
-        --help, -h  show help
+    OPTIONS:
+    --help, -h  show help
         
-        root@k8s-m01:~# 
+    root@k8s-m01:~# 
+    ```
