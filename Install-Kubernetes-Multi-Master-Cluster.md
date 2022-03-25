@@ -606,9 +606,10 @@
     ```
 - Check status node
     ```sh
-        kubectl get node
-        kubectl get node -o wide
+    kubectl get node
+    kubectl get node -o wide
     ```
+    # Output:
     ```sh
     root@k8s-m01:~# kubectl get node
     NAME      STATUS   ROLES                  AGE     VERSION

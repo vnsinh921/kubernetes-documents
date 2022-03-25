@@ -296,7 +296,7 @@
     ```
 - Check status pods
     ```sh
-        kubectl get pods --all-namespace
+    kubectl get pods --all-namespace
     ```
     # Output
     ```sh
@@ -314,9 +314,10 @@
     ```
 - Create token join cluster
     ```sh
-        kubeadm token create --print-join-command    
-
+    kubeadm token create --print-join-command    
+    ```
     # Output
+    ```sh
     root@k8s-m01:~# kubeadm token create --print-join-command
     kubeadm join 10.0.0.11:6443 --token 9489e3.y4jsk53zu6n3ywxs --discovery-token-ca-cert-hash sha256:0fbef9b1074945142bcdfa1852003ebce2e554db04316a77336a34821e5f0829 
     root@k8s-m01:~# 
@@ -327,8 +328,9 @@
 - Worker node 1
     ```sh
     kubeadm join 10.0.0.11:6443 --token 9489e3.y4jsk53zu6n3ywxs --discovery-token-ca-cert-hash sha256:0fbef9b1074945142bcdfa1852003ebce2e554db04316a77336a34821e5f0829
-
+    ```
     # Output
+    ```sh
     root@k8s-w01:~# kubeadm join 10.0.0.11:6443 --token 9489e3.y4jsk53zu6n3ywxs --discovery-token-ca-cert-hash sha256:0fbef9b1074945142bcdfa1852003ebce2e554db04316a77336a34821e5f0829
     [preflight] Running pre-flight checks
     [preflight] Reading configuration from the cluster...
@@ -351,9 +353,9 @@
 - Worker node 2
     ```sh
     kubeadm join 10.0.0.11:6443 --token 9489e3.y4jsk53zu6n3ywxs --discovery-token-ca-cert-hash sha256:0fbef9b1074945142bcdfa1852003ebce2e554db04316a77336a34821e5f0829
-    
+    ```
     # Output
-
+    ```sh
     root@k8s-w02:~# kubeadm join 10.0.0.11:6443 --token 9489e3.y4jsk53zu6n3ywxs --discovery-token-ca-cert-hash sha256:0fbef9b1074945142bcdfa1852003ebce2e554db04316a77336a34821e5f0829
     [preflight] Running pre-flight checks
     [preflight] Reading configuration from the cluster...
@@ -377,8 +379,9 @@
     ```sh
     kubectl get nodes
     kubectl get nodes -o wide
-
+    ```
     # Output
+    ```sh
     root@k8s-m01:~# kubectl get nodes
     NAME      STATUS   ROLES                  AGE     VERSION
     k8s-m01   Ready    control-plane,master   7m3s    v1.23.4
