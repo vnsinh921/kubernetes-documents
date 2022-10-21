@@ -302,7 +302,8 @@
 - Initialization master (On node k8s-m01)
     ```sh
     kubeadm init --control-plane-endpoint "10.0.0.11:6443" --upload-certs --pod-network-cidr=10.244.0.0/16 
-
+    ```
+    ```sh
     # Output
     root@k8s-m01:~# kubeadm init --control-plane-endpoint "10.0.0.10:6443" --upload-certs --pod-network-cidr=10.244.0.0/16
     [init] Using Kubernetes version: v1.23.4
